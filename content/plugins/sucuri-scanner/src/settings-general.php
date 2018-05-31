@@ -9,7 +9,7 @@
  * @package    Sucuri
  * @subpackage SucuriScanner
  * @author     Daniel Cid <dcid@sucuri.net>
- * @copyright  2010-2017 Sucuri Inc.
+ * @copyright  2010-2018 Sucuri Inc.
  * @license    https://www.gnu.org/licenses/gpl-2.0.txt GPL2
  * @link       https://wordpress.org/plugins/sucuri-scanner
  */
@@ -95,14 +95,20 @@ function sucuriscan_settings_general_apikey($nonce)
             $user_obj = SucuriScan::getUserByID($user_id);
 
             if ($user_obj && user_can($user_obj, 'administrator')) {
-                // Send request to generate new API key or display form to set manually.
-                if (SucuriScanAPI::registerSite($user_obj->user_email)) {
-                    $api_registered_modal = SucuriScanTemplate::getModal(
-                        'settings-apiregistered',
-                        array('Title' => 'Site registered successfully')
-                    );
+                // Check consent
+                if (SucuriScanRequest::post(':consent_tos') != 1 || SucuriScanRequest::post(':consent_priv') != 1) {
+                    SucuriScanInterface::error('You must accept the Terms of Service and Privacy Policy in order to request an API key.');
+					unset($_POST['sucuriscan_dns_lookups']);
                 } else {
-                    $display_manual_key_form = true;
+                    // Send request to generate new API key or display form to set manually.
+                    if (SucuriScanAPI::registerSite($user_obj->user_email)) {
+                        $api_registered_modal = SucuriScanTemplate::getModal(
+                            'settings-apiregistered',
+                            array('Title' => 'Site registered successfully')
+                        );
+                    } else {
+                        $display_manual_key_form = true;
+                    }
                 }
             }
         }
@@ -158,7 +164,7 @@ function sucuriscan_settings_general_datastorage($nonce)
         '', /* <root> */
         'auditlogs',
         'auditqueue',
-        'blockedusers',
+        'blockedusers', /* TODO: deprecated on 1.8.12 */
         'failedlogins',
         'hookdata',
         'ignorescanning',
@@ -476,7 +482,6 @@ function sucuriscan_settings_general_importexport($nonce)
     $params = array();
     $allowed = array(
         ':addr_header',
-        ':api_key',
         ':api_protocol',
         ':api_service',
         ':cloudproxy_apikey',
@@ -549,6 +554,26 @@ function sucuriscan_settings_general_importexport($nonce)
                     $count++;
                 }
 
+                /* import trusted ip addresses */
+                if (array_key_exists('trusted_ips', $data) && is_array($data)) {
+                    $cache = new SucuriScanCache('trustip');
+
+                    foreach ($data['trusted_ips'] as $trustedIP) {
+                        $trustedIP = str_replace('\/', '/', $trustedIP);
+                        $trustedIP = str_replace('/32', '', $trustedIP);
+
+                        if (SucuriScan::isValidIP($trustedIP) || SucuriScan::isValidCIDR($trustedIP)) {
+                            $ipInfo = SucuriScan::getIPInfo($trustedIP);
+                            $cacheKey = md5($ipInfo['remote_addr']);
+                            $ipInfo['added_at'] = time();
+
+                            if (!$cache->exists($cacheKey)) {
+                                $cache->add($cacheKey, $ipInfo);
+                            }
+                        }
+                    }
+                }
+
                 SucuriScanInterface::info(
                     sprintf(
                         '%d out of %d option have been successfully imported',
@@ -567,6 +592,14 @@ function sucuriscan_settings_general_importexport($nonce)
     foreach ($allowed as $option) {
         $option_name = SucuriScan::varPrefix($option);
         $settings[$option_name] = SucuriScanOption::getOption($option);
+    }
+
+    /* include the trusted IP address list */
+    $settings['trusted_ips'] = array();
+    $cache = new SucuriScanCache('trustip');
+    $trusted = $cache->getAll();
+    foreach ($trusted as $trustedIP) {
+        $settings['trusted_ips'][] = $trustedIP->cidr_format;
     }
 
     $params['Export'] = @json_encode($settings);
