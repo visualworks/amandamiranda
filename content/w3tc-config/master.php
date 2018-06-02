@@ -1,5 +1,5 @@
 <?php exit; ?>{
-    "version": "0.9.6",
+    "version": "0.9.7",
     "cluster.messagebus.debug": false,
     "cluster.messagebus.enabled": false,
     "cluster.messagebus.sns.region": "",
@@ -26,6 +26,7 @@
     ],
     "dbcache.redis.password": "",
     "dbcache.redis.dbid": 0,
+    "dbcache.use_filters": false,
     "dbcache.reject.constants": [
         "APP_REQUEST",
         "DOING_CRON",
@@ -163,10 +164,18 @@
         "wp-.*\\.php",
         "index\\.php"
     ],
-    "pgcache.reject.categories": [],
-    "pgcache.reject.tags": [],
-    "pgcache.reject.authors": [],
-    "pgcache.reject.custom": [],
+    "pgcache.reject.categories": [
+        ""
+    ],
+    "pgcache.reject.tags": [
+        ""
+    ],
+    "pgcache.reject.authors": [
+        ""
+    ],
+    "pgcache.reject.custom": [
+        ""
+    ],
     "pgcache.reject.ua": [
         ""
     ],
@@ -200,6 +209,7 @@
     "pgcache.prime.limit": "10",
     "pgcache.prime.sitemap": "",
     "pgcache.prime.post.enabled": "0",
+    "pgcache.rest": "",
     "pgcache.cookiegroups.enabled": false,
     "pgcache.cookiegroups.groups": {
         "mobile": {
@@ -437,6 +447,11 @@
     "cdn.azure.ssl": "auto",
     "cdn.mirror.domain": [],
     "cdn.mirror.ssl": "auto",
+    "cdn.limelight.short_name": "",
+    "cdn.limelight.username": "",
+    "cdn.limelight.api_key": "",
+    "cdn.limelight.host.domains": [],
+    "cdn.limelight.ssl": "auto",
     "cdn.maxcdn.authorization_key": "",
     "cdn.maxcdn.domain": [],
     "cdn.maxcdn.ssl": "auto",
@@ -461,6 +476,10 @@
     "cdn.att.token": "",
     "cdn.att.domain": [],
     "cdn.att.ssl": "auto",
+    "cdn.stackpath.authorization_key": "",
+    "cdn.stackpath.domain": [],
+    "cdn.stackpath.ssl": "auto",
+    "cdn.stackpath.zone_id": 0,
     "cdn.reject.admins": false,
     "cdn.reject.logged_roles": "0",
     "cdn.reject.roles": [
@@ -481,6 +500,16 @@
     "cdnfsd.enabled": false,
     "cdnfsd.engine": "",
     "cdnfsd.debug": false,
+    "cdnfsd.cloudfront.access_key": "",
+    "cdnfsd.cloudfront.secret_key": "",
+    "cdnfsd.cloudfront.distribution_id": "",
+    "cdnfsd.limelight.short_name": "",
+    "cdnfsd.limelight.username": "",
+    "cdnfsd.limelight.api_key": "",
+    "cdnfsd.maxcdn.api_key": "",
+    "cdnfsd.maxcdn.zone_id": 0,
+    "cdnfsd.stackpath.api_key": "",
+    "cdnfsd.stackpath.zone_id": 0,
     "varnish.configuration_overloaded": false,
     "varnish.enabled": "0",
     "varnish.debug": false,
@@ -490,7 +519,6 @@
     "browsercache.configuration_overloaded": false,
     "browsercache.enabled": "0",
     "browsercache.rewrite": false,
-    "browsercache.hsts": false,
     "browsercache.no404wp": false,
     "browsercache.no404wp.exceptions": [
         "robots\\.txt",
@@ -528,6 +556,40 @@
     "browsercache.other.replace": false,
     "browsercache.other.querystring": false,
     "browsercache.replace.exceptions": [],
+    "browsercache.security.session.cookie_httponly": "",
+    "browsercache.security.session.cookie_secure": "",
+    "browsercache.security.session.use_only_cookies": "",
+    "browsercache.hsts": false,
+    "browsercache.security.hsts.directive": "maxage",
+    "browsercache.security.xfo": false,
+    "browsercache.security.xfo.directive": "same",
+    "browsercache.security.xfo.allow": "",
+    "browsercache.security.xss": false,
+    "browsercache.security.xss.directive": "block",
+    "browsercache.security.xcto": false,
+    "browsercache.security.pkp": false,
+    "browsercache.security.pkp.pin": "",
+    "browsercache.security.pkp.pin.backup": "",
+    "browsercache.security.pkp.extra": "maxage",
+    "browsercache.security.pkp.report.url": "",
+    "browsercache.security.pkp.report.only": "0",
+    "browsercache.security.referrer.policy": "false",
+    "browsercache.security.referrer.policy.directive": "0",
+    "browsercache.security.csp": false,
+    "browsercache.security.csp.base": "",
+    "browsercache.security.csp.frame": "",
+    "browsercache.security.csp.connect": "",
+    "browsercache.security.csp.font": "",
+    "browsercache.security.csp.script": "",
+    "browsercache.security.csp.style": "",
+    "browsercache.security.csp.img": "",
+    "browsercache.security.csp.media": "",
+    "browsercache.security.csp.object": "",
+    "browsercache.security.csp.plugin": "",
+    "browsercache.security.csp.form": "",
+    "browsercache.security.csp.frame.ancestors": "",
+    "browsercache.security.csp.sandbox": "",
+    "browsercache.security.csp.default": "",
     "mobile.configuration_overloaded": false,
     "mobile.enabled": false,
     "mobile.rgroups": {

@@ -1,16 +1,16 @@
-wp/wp-content/w3tc-config/
+content/w3tc-config/
 *.log
 wp-config.php
 wp/wp-config.php
-wp/wp-content/advanced-cache.php
-wp/wp-content/backup-db/
-wp/wp-content/backups/
-wp/wp-content/blogs.dir/
-wp/wp-content/cache/
-wp/wp-content/upgrade/
-wp/wp-content/uploads/
-wp/wp-content/wp-cache-config.php
-wp/wp-content/plugins/hello.php
+content/advanced-cache.php
+content/backup-db/
+content/backups/
+content/blogs.dir/
+content/cache/
+content/upgrade/
+content/uploads/
+content/wp-cache-config.php
+content/plugins/hello.php
 
 /.htaccess
 wp/license.txt
